@@ -60,7 +60,7 @@ if (isset($_POST['name']) && !isset($_POST['save'])) {
 
     $insertNewUser->bind_param("sss", $_POST["name"], urldecode($_POST["mail"]), $_POST["pass"]);
     $insertNewUser->execute();
-
+// session
     $_SESSION['name'] = $_POST['name'];
     $_SESSION['email'] = $_POST['mail'];
 
