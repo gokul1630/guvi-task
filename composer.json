@@ -1,5 +1,5 @@
 {
-	"require": {
-		"ext-mysql": "*"
-	}
+    "require": {
+        "ext-mysqli": "^7.4"
+    }
 }
