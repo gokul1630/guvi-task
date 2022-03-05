@@ -40,8 +40,8 @@ if (isset($_GET['mail']) && !isset($_POST['save'])) {
           $_SESSION['mobile'] = $data['mobile'];
           $_SESSION['session'] = $_POST['name'];
           saveToJson($data['name'], $data['email'], $data['dob'], $data['mobile'], $data['age']);
-          echo jsonRespose("Success",200);
-        } else { 
+          echo jsonRespose("Success", 200);
+        } else {
           echo jsonRespose("Password doesn't match", 400);
         }
       }
@@ -60,7 +60,7 @@ if (isset($_POST['name']) && !isset($_POST['save'])) {
 
     $insertNewUser->bind_param("sss", $_POST["name"], urldecode($_POST["mail"]), $_POST["pass"]);
     $insertNewUser->execute();
-// session
+    // session
     $_SESSION['name'] = $_POST['name'];
     $_SESSION['email'] = $_POST['mail'];
 
@@ -93,26 +93,28 @@ if (isset($_POST['save'])) {
 // Delete Session
 if (isset($_POST['delete'])) {
   session_destroy();
-  echo jsonRespose('session deleted',200);
+  echo jsonRespose('session deleted', 200);
 }
 
 // function to create json response
-function jsonRespose($data,$statusCode) {
+function jsonRespose($data, $statusCode)
+{
   http_response_code($statusCode);
   return json_encode(array('message' => $data));
 }
 
 // error function
-function fieldAlert() { 
+function fieldAlert()
+{
   http_response_code(400);
   throw new Exception('All fields are required');
 }
 
 // function to convert data to json and save to file
-function saveToJson($name, $email, $dob, $mobile, $age) {
+function saveToJson($name, $email, $dob, $mobile, $age)
+{
   $jsonArray = array('name' => $name, 'email' => $email, 'age' => $age, 'mobileNumber' => $mobile, 'dob' => $dob);
   $jsonFile = fopen("users.json", "w") or die("file not found!");
   fwrite($jsonFile, json_encode($jsonArray));
   fclose($jsonFile);
 }
-?>

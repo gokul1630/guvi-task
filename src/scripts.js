@@ -1,11 +1,11 @@
-$('#save-btn').hide()
+$("#save-btn").hide()
 
-$('#submit-btn').click(function () {
-	let mail = $('#mail').val()
-	let password = $('#password').val()
-	if (mail !== '' && password !== '') {
+$("#submit-btn").click(function () {
+	let mail = $("#mail").val()
+	let password = $("#password").val()
+	if (mail !== "" && password !== "") {
 		$.ajax({
-			type: 'GET',
+			type: "GET",
 			data: {
 				mail: mail,
 				pass: password,
@@ -19,23 +19,23 @@ $('#submit-btn').click(function () {
 			},
 		})
 	} else {
-		alert('All fields required')
+		alert("All fields required")
 	}
 })
 
-$('#signup-submit-btn').click(function () {
-	let name = $('#signup-name').val()
-	let mail = $('#sign-up-mail').val()
-	let password = $('#signup-password').val()
-	if (mail !== '' && password !== '' && name !== '') {
+$("#signup-submit-btn").click(function () {
+	let name = $("#signup-name").val()
+	let mail = $("#sign-up-mail").val()
+	let password = $("#signup-password").val()
+	if (mail !== "" && password !== "" && name !== "") {
 		$.ajax({
-			type: 'POST',
+			type: "POST",
 			data: {
 				name: name,
 				mail: mail,
 				pass: password,
 			},
-			url: 'server.php',
+			url: "server.php",
 			success: function (data) {
 				window.location.href = "user.php"
 			},
@@ -44,33 +44,33 @@ $('#signup-submit-btn').click(function () {
 			},
 		})
 	} else {
-		alert('All fields required')
+		alert("All fields required")
 	}
 })
 
-$('#edit-btn').click(function () {
-	$('#user-name').prop('disabled', false)
-	$('#user-email').prop('disabled', false)
-	$('#user-dob').prop('disabled', false)
-	$('#user-mobile').prop('disabled', false)
-	$('#user-age').prop('disabled', false)
-	$('#edit-btn').hide()
-	$('#save-btn').show()
-	$('#signout-btn').hide()
+$("#edit-btn").click(function () {
+	$("#user-name").prop("disabled", false)
+	$("#user-email").prop("disabled", false)
+	$("#user-dob").prop("disabled", false)
+	$("#user-mobile").prop("disabled", false)
+	$("#user-age").prop("disabled", false)
+	$("#edit-btn").hide()
+	$("#save-btn").show()
+	$("#signout-btn").hide()
 })
 
-$('#save-btn').click(function () {
-	let name = $('#user-name').val()
-	let mail = $('#user-email').val()
-	let age = $('#user-age').val()
-	let dob = $('#user-dob').val()
-	let mobile = $('#user-mobile').val()
+$("#save-btn").click(function () {
+	let name = $("#user-name").val()
+	let mail = $("#user-email").val()
+	let age = $("#user-age").val()
+	let dob = $("#user-dob").val()
+	let mobile = $("#user-mobile").val()
 
 	$.ajax({
-		url: 'server.php',
-		type: 'POST',
+		url: "server.php",
+		type: "POST",
 		data: {
-			save: '',
+			save: "",
 			name: name,
 			mail: mail,
 			age: age,
@@ -94,12 +94,12 @@ $('#save-btn').click(function () {
 	})
 })
 
-$('#signout-btn').click(function () {
+$("#signout-btn").click(function () {
 	$.ajax({
-		url: 'server.php',
-		type: 'POST',
+		url: "server.php",
+		type: "POST",
 		data: {
-			delete: '',
+			delete: "",
 		},
 		success: function (data) {
 			window.location.href = "index.html"
