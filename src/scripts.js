@@ -10,22 +10,12 @@ $('#submit-btn').click(function () {
 				mail: mail,
 				pass: password,
 			},
-			url: 'server.php',
-			success: function (data) {
-				switch (data) {
-					case "Email isn't registred yet":
-						alert(data)
-						break
-					case 'All fields are required':
-						alert(data)
-						break
-					case mail:
-						window.location.href = 'user.php'
-						break
-					case "Password doesn't match":
-						alert(data)
-						break
-				}
+			url: "server.php",
+			success: function () {
+				window.location.href = "user.php"
+			},
+			error: function (error) {
+				alert(parseResponse(error.responseText))
 			},
 		})
 	} else {
@@ -47,16 +37,10 @@ $('#signup-submit-btn').click(function () {
 			},
 			url: 'server.php',
 			success: function (data) {
-				console.log(data)
-
-				switch (data) {
-					case 'user added':
-						window.location.href = 'user.php'
-						break
-					case 'All fields are required':
-						alert(data)
-						break
-				}
+				window.location.href = "user.php"
+			},
+			error: function (error) {
+				alert(parseResponse(error.responseText))
 			},
 		})
 	} else {
@@ -94,23 +78,18 @@ $('#save-btn').click(function () {
 			mobile: mobile,
 		},
 		success: function (data) {
-			switch (data) {
-				case 'user updated':
-					console.log(data)
-					location.reload()
-					$('#user-name').prop('disabled', true)
-					$('#user-email').prop('disabled', true)
-					$('#user-dob').prop('disabled', true)
-					$('#user-mobile').prop('disabled', true)
-					$('#user-age').prop('disabled', true)
-					$('#edit-btn').show()
-					$('#save-btn').hide()
-					$('#signout-btn').show()
-					break
-				case 'All fields are required':
-					alert(data)
-					break
-			}
+			window.location.reload()
+			$("#user-name").prop("disabled", true)
+			$("#user-email").prop("disabled", true)
+			$("#user-dob").prop("disabled", true)
+			$("#user-mobile").prop("disabled", true)
+			$("#user-age").prop("disabled", true)
+			$("#edit-btn").show()
+			$("#save-btn").hide()
+			$("#signout-btn").show()
+		},
+		error: function (error) {
+			alert(parseResponse(error.responseText))
 		},
 	})
 })
@@ -123,11 +102,18 @@ $('#signout-btn').click(function () {
 			delete: '',
 		},
 		success: function (data) {
-			switch (data) {
-				case 'deleted\n':
-					window.location.href = 'index.html'
-					break
-			}
+			window.location.href = "index.html"
+		},
+		error: function (error) {
+			alert(parseResponse(error))
 		},
 	})
 })
+
+function parseResponse(data) {
+	try {
+		return JSON.parse(data).message
+	} catch (error) {
+		return error
+	}
+}
