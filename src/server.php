@@ -3,8 +3,9 @@ session_start();
 $servername = "localhost";
 $username   = "root";
 $password   = "1234";
+$dbname     = "user";
 
-$sqlConnection = new mysqli($servername, $username, $password, 'user');
+$sqlConnection = new mysqli($servername, $username, $password);
 
 
 if ($sqlConnection->connect_error) {
@@ -12,8 +13,13 @@ if ($sqlConnection->connect_error) {
   die("Connection failed: " . $sqlConnection->connect_error);
 }
 
+$createTableIfNotExists = "CREATE DATABASE IF NOT EXISTS " . $dbname;
+$sqlConnection->query($createTableIfNotExists);
+
 $createTableIfNotExists = "CREATE TABLE IF NOT EXISTS user.user (id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,name TEXT,email VARCHAR(255) UNIQUE,password TEXT,age INT,dob TEXT,mobile INT)";
 $sqlConnection->query($createTableIfNotExists);
+
+mysqli_select_db($sqlConnection, $dbname);
 
 $selectEmailFromTable = $sqlConnection->prepare("SELECT * FROM user.user WHERE email=? LIMIT 1");
 
