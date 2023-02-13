@@ -8,11 +8,11 @@ $sqlConnection = new mysqli($servername, $username, $password, 'user');
 
 
 if ($sqlConnection->connect_error) {
-  die("Connection failed: " . $sqlConnection->connect_error);
   $sqlConnection->close();
+  die("Connection failed: " . $sqlConnection->connect_error);
 }
 
-$createTableIfNotExists = "CREATE TABLE IF NOT EXISTS user.user (id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,name TEXT,email TEXT,password TEXT,age INT,dob TEXT,mobile INT)";
+$createTableIfNotExists = "CREATE TABLE IF NOT EXISTS user.user (id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,name TEXT,email VARCHAR(255) UNIQUE,password TEXT,age INT,dob TEXT,mobile INT)";
 $sqlConnection->query($createTableIfNotExists);
 
 $selectEmailFromTable = $sqlConnection->prepare("SELECT * FROM user.user WHERE email=? LIMIT 1");
@@ -58,14 +58,26 @@ if (isset($_GET['mail']) && !isset($_POST['save'])) {
 if (isset($_POST['name']) && !isset($_POST['save'])) {
   if (!empty($_POST['mail']) && !empty($_POST['pass'])) {
 
-    $insertNewUser->bind_param("sss", $_POST["name"], urldecode($_POST["mail"]), $_POST["pass"]);
-    $insertNewUser->execute();
-    // session
-    $_SESSION['name'] = $_POST['name'];
-    $_SESSION['email'] = $_POST['mail'];
+    $name     = $_POST['name'];
+    $email    = $_POST['mail'];
+    $password = $_POST['pass'];
 
-    saveToJson($_POST['name'], $_POST['mail'], $_POST['dob'], $_POST['mobile'], $_POST['age']);
-    echo jsonRespose('user added', 200);
+    $decodedMail = urldecode($email);
+
+
+    try {
+      $insertNewUser->bind_param("sss", $name, $decodedMail, $password);
+      $insertNewUser->execute();
+
+      saveToJson($name, $email, $dob, $mobile, $age);
+
+      jsonRespose(array("name" => $name, "email" => $email), 200);
+
+    } catch (mysqli_sql_exception $err) {
+      if ($err->getCode() === 1062)
+        jsonRespose(array("message" => "Email $email Already Exists"), 500);
+
+    }
   } else {
     echo fieldAlert();
   }
