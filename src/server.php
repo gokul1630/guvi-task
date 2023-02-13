@@ -1,8 +1,8 @@
 <?php
 session_start();
 $servername = "localhost";
-$username = "root";
-$password = "1234";
+$username   = "root";
+$password   = "1234";
 
 $sqlConnection = new mysqli($servername, $username, $password, 'user');
 
@@ -23,31 +23,37 @@ $updateUser = $sqlConnection->prepare("UPDATE user.user SET name=?,age=?,dob=?,m
 
 
 // Login
-if (isset($_GET['mail']) && !isset($_POST['save'])) {
-  if (!empty($_GET['mail']) && !empty($_GET['pass'])) {
+if (isset($_POST['mail']) && isset($_POST['login'])) {
+  if (!empty($_POST['mail']) && !empty($_POST['pass'])) {
 
-    $selectEmailFromTable->bind_param("s", urldecode($_GET["mail"]));
+    $email = $_POST['mail'];
+
+    $decodedMail = urldecode($email);
+
+    $selectEmailFromTable->bind_param("s", $decodedMail);
     $selectEmailFromTable->execute();
     $result = $selectEmailFromTable->get_result();
 
+
     if ($result->num_rows > 0) {
       while ($data = $result->fetch_assoc()) {
-        if ($data['password'] == $_GET['pass']) {
-          $_SESSION['name'] = $data['name'];
-          $_SESSION['email'] = $data['email'];
-          $_SESSION['age'] = $data['age'];
-          $_SESSION['dob'] = $data['dob'];
-          $_SESSION['mobile'] = $data['mobile'];
-          $_SESSION['session'] = $_POST['name'];
-          saveToJson($data['name'], $data['email'], $data['dob'], $data['mobile'], $data['age']);
-          echo jsonRespose("Success", 200);
+        if ($data['password'] == $_POST['pass']) {
+
+          $name   = $data['name'];
+          $email  = $data['email'];
+          $age    = $data['age'];
+          $dob    = $data['dob'];
+          $mobile = $data['mobile'];
+
+          saveToJson($name, $email, $dob, $mobile, $age);
+          jsonRespose(array("name" => $name, "email" => $email, "age" => $age, "dob" => $dob, "mobile" => $mobile), 200);
         } else {
-          echo jsonRespose("Password doesn't match", 400);
+          jsonRespose(array('message' => "Password doesn't match"), 400);
         }
       }
     } else {
-      echo jsonRespose("Email isn't registred yet", 404);
-      session_destroy();
+      jsonRespose(array('message' => "Email isn't registred yet"), 404);
+
     }
   } else {
     echo fieldAlert();
@@ -87,32 +93,36 @@ if (isset($_POST['name']) && !isset($_POST['save'])) {
 // Update details
 if (isset($_POST['save'])) {
   if (!empty($_POST['mail']) && !empty($_POST['name']) && !empty($_POST['age']) && !empty($_POST['dob']) && !empty($_POST['mobile'])) {
-    $updateUser->bind_param("sisis", $_POST['name'], $_POST['age'], $_POST['dob'], $_POST['mobile'], urldecode($_POST['mail']));
+
+    $email = $_POST['mail'];
+
+    $decodedMail = urldecode($email);
+
+    $updateUser->bind_param("sisis", $_POST['name'], $_POST['age'], $_POST['dob'], $_POST['mobile'], $decodedMail);
     $updateUser->execute();
 
-    $_SESSION['name'] = $_POST['name'];
-    $_SESSION['email'] = $_POST['mail'];
-    $_SESSION['age'] = $_POST['age'];
-    $_SESSION['dob'] = $_POST['dob'];
-    $_SESSION['mobile'] = $_POST['mobile'];
-    saveToJson($_POST['name'], $_POST['mail'], $_POST['dob'], $_POST['mobile'], $_POST['age']);
-    echo jsonRespose('user updated', 200);
+    $name   = $_POST['name'];
+    $email  = $_POST['mail'];
+    $age    = $_POST['age'];
+    $dob    = $_POST['dob'];
+    $mobile = $_POST['mobile'];
+
+    saveToJson($name, $email, $dob, $mobile, $age);
+
+    jsonRespose(array("name" => $name, "email" => $email, "age" => $age, "dob" => $dob, "mobile" => $mobile), 200);
   } else {
     echo fieldAlert();
   }
 }
 
-// Delete Session
-if (isset($_POST['delete'])) {
-  session_destroy();
-  echo jsonRespose('session deleted', 200);
-}
 
 // function to create json response
 function jsonRespose($data, $statusCode)
 {
+
   http_response_code($statusCode);
-  return json_encode(array('message' => $data));
+  header('Content-Type: application/json');
+  echo json_encode($data);
 }
 
 // error function
