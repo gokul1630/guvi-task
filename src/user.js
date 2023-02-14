@@ -27,7 +27,6 @@ window.onload = function () {
 
 editBtn.click(function () {
     userName.prop("disabled", false)
-    userEmail.prop("disabled", false)
     userDob.prop("disabled", false)
     userMobile.prop("disabled", false)
     userAge.prop("disabled", false)
